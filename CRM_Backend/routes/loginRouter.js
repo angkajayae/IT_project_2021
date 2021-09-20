@@ -19,25 +19,45 @@ router.get('/login', async (req,res) => {
     }
   });
 
-router.post('/login', passport.authenticate('customer-login', {
-successRedirect: '/home',
-failureRedirect: '/login',
-failureFlash: true
-}));
 
-router.get('/register', async (req,res) => {
-    try {
-      res.render('register');
-    } catch (err){
-    res.render(404);
-    }
-});
+router.post("/login", (req, res, next) => {
+	passport.authenticate("customer-login", (err, user, info) => {
+	  if (err) throw err;
+	  if (!user) res.send(false);
+	  else {
+		req.logIn(user, (err) => {
+		  if (err) throw err;
+		  res.send("Successfully Authenticated");
+		  console.log(req.user);
+		});
+	  }
+	})(req, res, next);
+  });
 
-router.post('/register', passport.authenticate('customer-signup', {
-    successRedirect: '/home',
-    failureRedirect: '/register',
-    failureFlash: true
-}));
+
+  router.post("/register", (req, res, next) => {
+	passport.authenticate("customer-signup", (err, user, info) => {
+	  if (err) throw err;
+	  if (!user) res.send(false);
+	  else {
+		req.logIn(user, (err) => {
+		  if (err) throw err;
+		  res.send("Successfully Authenticated");
+		  console.log(req.user);
+		});
+	  }
+	})(req, res, next);
+  });
+
+router.post('/register', passport.authenticate('customer-signup', 
+  (req, res) => {
+  console.log('registered', req.user);
+  var userInfo = {
+    username: req.user.username
+  };
+  res.send(userInfo);
+    }) 
+  );
 
 router.post('/logout',function(req,res){
     console.log("logging out..")

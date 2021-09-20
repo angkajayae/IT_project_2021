@@ -9,9 +9,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import SideBar from "./components/sidebar";
 import Home from "./pages/Home";
 import { LoginForm, Logout  } from "./pages/Users";
+import {RegisterForm} from "./pages/Register";
 import Contacts from "./pages/Contacts";
 import ContactProfile from "./pages/ContactProfile";
 import CreateContact from "./pages/CreateContact";
+
 
 function App() {
   
@@ -27,17 +29,18 @@ function App() {
           </Route>
           <Route exact path="/login" component={LoginForm} />
           <Route exact path="/logout" component={Logout} />
+          <Route exact path="/register" component={RegisterForm} />
           <Route exact path="/contact" component={Contacts} />
           <Route exact path="/contact/create" component={CreateContact} />
           <Route exact path="/contact/profile/:id" component={ContactProfile} />
         </Switch>
       </Router>
-    </div>
+    </div> 
   )
 
   const loginPage = <LoginForm setLoggedIn={setLoggedIn}/>
 
-  return mainComponent;
+  return mainComponent; 
 }
 
 export default App;

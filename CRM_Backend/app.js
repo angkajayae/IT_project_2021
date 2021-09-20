@@ -8,7 +8,7 @@ const http = require('http');
 const passport = require("./passport/setup.js");
 const flash = require('connect-flash-plus');
 const session = require("express-session");
-const jwt = require('jsonwebtoken');
+const cookieParser = require("cookie-parser");
 const MongoDBStore = require("connect-mongo");
 const db = "mongodb+srv://user:P%40ssw0rd!@cluster0.lzade.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const dboptions = {
@@ -17,6 +17,10 @@ const dboptions = {
   };
 const cors = require('cors');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 // connecting to database
 mongoose.connect(db, dboptions).then(
     () => {
@@ -40,14 +44,13 @@ app.engine('hbs', exphbs({
 
 app.use(express.json())
 app.use(cors({
-    credentials: true,
-    origin: "http://localhost:5000/",
-    methods: ['GET', 'POST']
-    })
-);
+  credentials: true,
+  origin: "http://localhost:3000",
+  methods: ['GET', 'POST']
+}));
 
 app.use(session({
-  secret: "test",
+  secret: "testttt",
   resave: true,
   saveUnitialized: true,
   expires: new Date(Date.now() + (60 * 60 * 24 * 7 * 1000)),
@@ -56,17 +59,15 @@ app.use(session({
   store: MongoDBStore.create({mongoUrl: db})
 }));
 
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.urlencoded({extended: true}));
 app.set('view engine', 'hbs');
-app.engine('handlebars', exphbs());
+// app.engine('handlebars', exphbs());
 app.use(express.static(path.join(__dirname, '/public')));
 
-// setting trust proxy
-app.enable('trust proxy');
-app.set('trust proxy', true);
 
 const port =  process.env.PORT || 5000
 
@@ -90,10 +91,10 @@ app.listen(port, () => {
 })
 
 // handler for GET home page
-app.get('/', (req, res) => {
-    res.render('login')
-    //res.send('<h1>Personal CRM</h1>')
-})
+// app.get('/', (req, res) => {
+//     res.render('login')
+//     //res.send('<h1>Personal CRM</h1>')
+// })
 
 
 module.exports = app
